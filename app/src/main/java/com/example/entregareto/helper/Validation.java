@@ -1,11 +1,15 @@
 package com.example.entregareto.helper;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class Validation {
+    public static boolean refname;
+    public static boolean refemail;
+    public static boolean refPassword;
 
 
     public static void validateTextField(TextView textView, TextView errorMsg, String fieldName, int min, int max, Context context){
@@ -18,6 +22,7 @@ public class Validation {
             Toast.makeText(context,msg , Toast.LENGTH_LONG).show();
             errorMsg.setText(msg);
             errorMsg.setVisibility(TextView.VISIBLE);
+            refname = false;
             return;
         }
 
@@ -26,6 +31,7 @@ public class Validation {
             Toast.makeText(context,msg ,Toast.LENGTH_LONG).show();
             errorMsg.setText(msg);
             errorMsg.setVisibility(TextView.VISIBLE);
+            refname = false;
             return;
         }
 
@@ -34,9 +40,12 @@ public class Validation {
             Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
             errorMsg.setText(msg);
             errorMsg.setVisibility(TextView.VISIBLE);
+            refname = false;
             return;
         }
         else errorMsg.setVisibility(TextView.GONE);
+        refname = true;
+        Log.e("msg", "Prueba nombre " + refname);
 
         //return;
 
@@ -53,6 +62,8 @@ public class Validation {
             Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
             errorMsg.setText(msg);
             errorMsg.setVisibility(TextView.VISIBLE);
+            refemail = false;
+            Log.e("msg", "Prueba email " + refemail);
             return;
         }
 
@@ -60,9 +71,11 @@ public class Validation {
             msg = "Ingrese una dirección de correo válida";
             errorMsg.setText(msg);
             errorMsg.setVisibility(TextView.VISIBLE);
+            refemail = false;
             return;
         }
         else errorMsg.setVisibility(TextView.GONE);
+        refemail = true;
 
     }
 
@@ -74,6 +87,7 @@ public class Validation {
             msg = "La contraseña no puede estar vacía";
             errorMsg.setText(msg);
             errorMsg.setVisibility(TextView.VISIBLE);
+            refPassword = false;
             return;
         }
 
@@ -81,12 +95,30 @@ public class Validation {
             msg = "la contraseña debe contener min" + min + "y max " + max + "caracteres";
             errorMsg.setText(msg);
             errorMsg.setVisibility(TextView.VISIBLE);
+            refPassword = false;
             return;
         }
         else errorMsg.setVisibility(TextView.GONE);
+        refPassword = true;
+
+    }
 
 
 
+    public static boolean showErrorMessages(){
+
+
+
+        if(refname && refemail && refPassword){
+            Log.e("msg", "Prueba methodo1  " + refname );
+
+            return true;
+        }
+        else {
+            Log.e("msg", "Prueba methodo " + refname);
+
+            return false;
+        }
     }
 
 }

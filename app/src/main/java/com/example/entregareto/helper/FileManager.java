@@ -111,10 +111,41 @@ public class FileManager {
             Toast.makeText(context, "Error al leer el archivo " + userFile.getName() + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
         Log.e("msg", "validateifuserexist final " );
-        //String jsonData = new Gson().toJson(this);
-        //Log.e("msg", "validateifuserexist final " + jsonData );
+
         //Si llega hasta acá es porque el email no existe en la base de datos
         return false;
+    }
+
+    public User findUserByEmailAndPassword(User user) {
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(userFile));
+
+            String data;
+            while ((data = reader.readLine()) != null) {
+
+                //Convertimos el dato leido en un objeto de tipo User
+                User dbUser = new Gson().fromJson(data, User.class);
+
+                Log.e("msg", "Email: " + dbUser.email + ", Password: " + dbUser.password);
+                Log.e("msg", "Email: " + user.email + ", Password: " + user.password);
+
+                //Si las credenciles coinciden con los registros en la base de datos retornamos true
+                if (dbUser.email.equals(user.email) && dbUser.password.equals(user.password)) {
+                    Log.e("msg", "Email: " + user.email + ", Password: " + user.password + " <- Correct!");
+
+                    return dbUser;
+                }
+            }
+
+            reader.close();
+
+        } catch (IOException e) {
+            Toast.makeText(context, "Error al leer el archivo " + userFile.getName() + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        //Si llega hasta acá es porque los datos del usuario no coinciden con los registros de la base de datos
+        return null;
     }
 
 }

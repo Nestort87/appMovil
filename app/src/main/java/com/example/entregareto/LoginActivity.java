@@ -2,6 +2,7 @@ package com.example.entregareto;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,9 +11,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.entregareto.helper.Encrypt;
+import com.example.entregareto.helper.FileManager;
+import com.example.entregareto.models.User;
 
 public class LoginActivity extends AppCompatActivity {
 
+
+    User user;
     EditText editTextEmail;
     EditText editTextPassword;
     Button botoniniciarsesion;
@@ -47,25 +52,52 @@ public class LoginActivity extends AppCompatActivity {
 
     }
     public void login (){
-    String email= this.editTextEmail.getText().toString();
-    String password = this.editTextPassword.getText().toString();
+
+        String email= this.editTextEmail.getText().toString();
+        String password = this.editTextPassword.getText().toString();
+
+
+
+
+
 
     //simular bade de datos
-    String emailStored = "nart@gmail.com";
-    String passwordStored = Encrypt.encryptPassword("atenea123") ;
+    /*String emailStored = "nart@gmail.com";
+    String passwordStored = Encrypt.encryptPassword("atenea123") ;*/
+        user            = new User() ;
+        Log.e("msg", "login " );
+        user            .setDefaultData();
+        //Log.e("msg", "login " );
 
-    if(email.equals(emailStored)){
-        if(Encrypt.validateEncryptedPassword(password, passwordStored)){
-            Intent intent = new Intent(this, PrincipalActivity.class);
-            startActivity(intent);
+        if(!email.isEmpty() && !password.isEmpty()) {
+
+            user.email      = email;
+            user.password   = Encrypt.encryptPassword(password); //Encriptamos la constraseña ingresada
+
+            FileManager fileManager = new FileManager(this);
+
+            //Validar credenciales en base de datos
+            User userLogged = fileManager.findUserByEmailAndPassword(user);
+
+            if (userLogged != null) {
+
+                user.copyData(userLogged); //Actualizamos el usuario GLOBAL de la aplicación con los datos de la base de datos
+
+                Intent intent = new Intent(this, PrincipalActivity.class);
+                startActivity(intent);
+
+                Toast.makeText(this, "Bienvenido", Toast.LENGTH_LONG).show();
+
+            } else {
+                Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_LONG).show();
+            }
         }
-        else{
-            Toast.makeText(this , "credenciales incorrectas", Toast.LENGTH_LONG).show();
+        else {
+            Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_LONG).show();
         }
-    }
-    else{
-        Toast.makeText(this , "credenciales incorrectas", Toast.LENGTH_LONG).show();
-    }
+
+
+
 
 
     }
